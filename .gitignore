@@ -1,0 +1,36 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# Session files
+sessions/
+*.json
+
+# Logs
+logs/
+*.log
+
+# Cache
+cache/
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Credentials
+auth.json
+auth.lock
+*.pem
+*.key
+
+# Temporary files
+*.tmp
+*.swp

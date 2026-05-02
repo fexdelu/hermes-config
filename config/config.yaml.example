@@ -1,0 +1,19 @@
+# Hermes Agent Configuration
+# Copy to config.yaml and customize
+
+model:
+  default: "qwen2.5:32b-128k"
+  provider: "custom"
+  base_url: "http://localhost:11434/v1"
+  context_length: 131072
+
+# Plugins - add your enabled plugins here
+plugins:
+  enabled:
+    - clima
+
+# Skill paths
+skill_directories:
+  - ~/.hermes/skills
+
+# Gateway config (Telegram, etc) - see actual file for full config

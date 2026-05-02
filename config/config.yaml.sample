@@ -1,0 +1,101 @@
+# Hermes Agent CLI Configuration
+# Copy this file to cli-config.yaml and customize as needed.
+# This file configures the CLI behavior. Environment variables in .env take precedence.
+
+# =============================================================================
+# Model Configuration
+# =============================================================================
+model:
+  # Default model to use (can be overridden with --model flag)
+  # Both "default" and "model" work as the key name here.
+  default: "qwen2.5:32b-128k"
+  
+  # Inference provider selection:
+  #   "auto"         - Auto-detect from credentials (default)
+  #   "openrouter"   - OpenRouter (requires: OPENROUTER_API_KEY or OPENAI_API_KEY)
+  #   "nous"         - Nous Portal OAuth (requires: hermes login)
+  #   "nous-api"     - Nous Portal API key (requires: NOUS_API_KEY)
+  #   "anthropic"    - Direct Anthropic API (requires: ANTHROPIC_API_KEY)
+  #   "openai-codex" - OpenAI Codex (requires: hermes auth)
+  #   "copilot"      - GitHub Copilot / GitHub Models (requires: GITHUB_TOKEN)
+  #   "gemini"      - Use Google AI Studio direct (requires: GOOGLE_API_KEY or GEMINI_API_KEY)
+  #   "zai"         - Use z.ai / ZhipuAI GLM models (requires: GLM_API_KEY)
+  #   "kimi-coding"  - Kimi / Moonshot AI (requires: KIMI_API_KEY)
+  #   "minimax"      - MiniMax global (requires: MINIMAX_API_KEY)
+  #   "minimax-cn"   - MiniMax China (requires: MINIMAX_CN_API_KEY)
+  #   "huggingface"  - Hugging Face Inference (requires: HF_TOKEN)
+  #   "nvidia"       - NVIDIA NIM / build.nvidia.com (requires: NVIDIA_API_KEY)
+  #   "xiaomi"       - Xiaomi MiMo (requires: XIAOMI_API_KEY)
+  #   "arcee"        - Arcee AI Trinity models (requires: ARCEEAI_API_KEY)
+  #   "ollama-cloud" - Ollama Cloud (requires: OLLAMA_API_KEY — https://ollama.com/settings)
+  #   "kilocode"     - KiloCode gateway (requires: KILOCODE_API_KEY)
+  #   "ai-gateway"   - Vercel AI Gateway (requires: AI_GATEWAY_API_KEY)
+  #   "lmstudio"     - LM Studio local server (optional: LM_API_KEY, defaults to http://127.0.0.1:1234/v1)
+  #
+  # Local servers (LM Studio, Ollama, vLLM, llama.cpp):
+  #   "custom"       - Any other OpenAI-compatible endpoint. Set base_url below.
+  #   Aliases: "ollama", "vllm", "llamacpp" all map to "custom".
+  #   LM Studio is first-class and uses provider: "lmstudio".
+  #   It works with both no-auth and auth-enabled server modes.
+  #
+  # Can also be overridden with --provider flag or HERMES_INFERENCE_PROVIDER env var.
+  provider: "custom"
+  
+  # API configuration (falls back to OPENROUTER_API_KEY env var)
+  # api_key: "your-key-here"  # Uncomment to set here instead of .env
+  base_url: "http://localhost:11434/v1"
+
+  # ── Token limits — two settings, easy to confuse ──────────────────────────
+  #
+  # context_length: TOTAL context window (input + output tokens combined).
+  #   Controls when Hermes compresses history and validates requests.
+  #   Leave unset — Hermes auto-detects the correct value from the provider.
+  #   Set manually only when auto-detection is wrong (e.g. a local server with
+  #   a custom num_ctx, or a proxy that doesn't expose /v1/models).
+  #
+  context_length: 131072
+  #
+  # max_tokens: OUTPUT cap — maximum tokens the model may generate per response.
+  #   Unrelated to how long your conversation history can be.
+  #   The OpenAI-standard name "max_tokens" is a misnomer; Anthropic's native
+  #   API has since renamed it "max_output_tokens" for clarity.
+  #   Leave unset to use the model's native output ceiling (recommended).
+  #   Set only if you want to deliberately limit individual response length.
+  #
+# max_tokens: 8192
+
+# Named provider overrides (optional)
+# Use this for per-provider request timeouts, non-stream stale timeouts,
+# and per-model exceptions.
+# Applies to the primary turn client on every api_mode (OpenAI-wire, native
+# Anthropic, and Anthropic-compatible providers), the fallback chain, and
+# client rebuilds during credential rotation.  For OpenAI-wire chat
+# completions (streaming and non-streaming) the configured value is also
+# used as the per-request ``timeout=`` kwarg so it wins over the legacy
+# HERMES_API_TIMEOUT env var (which still applies when no config is set).
+# ``stale_timeout_seconds`` controls the non-streaming stale-call detector and
+# wins over the legacy HERMES_API_CALL_STALE_TIMEOUT env var. Leaving these
+# unset keeps the legacy defaults (HERMES_API_TIMEOUT=1800s,
+# HERMES_API_CALL_STALE_TIMEOUT=300s, native Anthropic 900s).
+#
+# Not currently wired for AWS Bedrock (bedrock_converse + AnthropicBedrock
+# SDK paths) — those use boto3 with its own timeout configuration.
+#
+# providers:
+#   ollama-local:
+#     request_timeout_seconds: 300   # Longer timeout for local cold-starts
+#     stale_timeout_seconds: 900     # Explicitly re-enable stale detection on local endpoints
+#   anthropic:
+#     request_timeout_seconds: 30    # Fast-fail cloud requests
+#     models:
+#       claude-opus-4.6:
+#         timeout_seconds: 600       # Longer timeout for extended-thinking Opus calls
+#   openai-codex:
+#     models:
+#       gpt-5.4:
+#         stale_timeout_seconds: 1800  # Longer non-stream stale timeout for slow large-context turns
+
+# =============================================================================
+# OpenRouter Provider Routing (only applies when using OpenRouter)
+# =============================================================================
+# ... rest of config.yaml (full version in actual deployment)

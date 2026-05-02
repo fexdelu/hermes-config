@@ -1,0 +1,8 @@
+name: clima
+version: 1.0.0
+description: "Weather lookup via /clima command — returns current conditions in Spanish using OpenWeatherMap API."
+author: fede
+requires_env:
+  - WEATHER_API_KEY
+provides_commands:
+  - clima
