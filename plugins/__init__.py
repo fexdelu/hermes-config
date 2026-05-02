@@ -8,6 +8,7 @@ import os
 from typing import Any, Optional
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
+from urllib.parse import quote
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ def _fetch_weather(city: str) -> dict[str, Any]:
 
     url = (
         f"https://api.openweathermap.org/data/2.5/weather"
-        f"?q={city}&appid={api_key}&units=metric&lang=es"
+        f"?q={quote(city)}&appid={api_key}&units=metric&lang=es"
     )
     try:
         req = Request(url, headers={"User-Agent": "Hermes-clima/1.0"})
